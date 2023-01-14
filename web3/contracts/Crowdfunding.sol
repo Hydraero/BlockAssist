@@ -18,10 +18,12 @@ contract Crowdfunding {
 
     uint256 public numberOfCampaigns = 0;
 
+    //Function to create a new campaign
     function createCampaign(address _owner, string memory _title, string memory _description, uint256 _target, uint256 _deadline, string memory _image) public returns (uint256) {
         Campaign storage campaign = campaigns[numberOfCampaigns];
 
-        require(campaign.deadline < block.timestamp, "The deadline should be a date in the future.");
+        //Makes sure campaign deadline is not past the current time
+        require(campaign.deadline < block.timestamp, "The deadline has to be past the current time and in the future.");
 
         campaign.owner = _owner;
         campaign.title = _title;
@@ -36,6 +38,8 @@ contract Crowdfunding {
         return numberOfCampaigns - 1;
     }
 
+    //Function that allows users to donate to a campaign
+    //Payable signifies cryptocurrency will be sent with this function
     function donateToCampaign(uint256 _id) public payable {
         uint256 amount = msg.value;
 
@@ -51,10 +55,12 @@ contract Crowdfunding {
         }
     }
 
+    //Get a the donators of a single campaign given the campaign ID
     function getDonators(uint256 _id) view public returns (address[] memory, uint256[] memory) {
         return (campaigns[_id].donators, campaigns[_id].donations);
     }
 
+    //Get function to get all campaigns
     function getCampaigns() public view returns (Campaign[] memory) {
         Campaign[] memory allCampaigns = new Campaign[](numberOfCampaigns);
 
